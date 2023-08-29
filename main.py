@@ -2,10 +2,11 @@ import pygame
 import sys
 from pygame.image import load
 from pygame.locals import *
+from utils import load_images
 
 #constants
 WIDTH, HEIGHT = 900, 450
-BACKGROUND_COLOR = (97, 133, 248)  #RGB: 6185f8
+BACKGROUND_COLOR = (97, 133, 248)  #RGB: 6185f8 (97, 133, 248)
 FRAME_DELAY = 100  #milliseconds
 GRAVITY = 5  #acceleration due to gravity
 JUMP_STRENGTH = -20  #strength of the jump
@@ -22,16 +23,20 @@ background = pygame.Surface((WIDTH, HEIGHT))
 background.fill(BACKGROUND_COLOR)
 
 #load player frames
-right_frames = [load('Sprite Sheet/Mario/frame1.png').convert(),
-                load('Sprite Sheet/Mario/frame2.png').convert(),
-                load('Sprite Sheet/Mario/frame3.png').convert()]
-left_frames = [load('Sprite Sheet/Mario/frame4.png').convert(),
-               load('Sprite Sheet/Mario/frame5.png').convert(),
-               load('Sprite Sheet/Mario/frame6.png').convert()]
+right_frames = [load_images('Mario/frame1.png').convert(),
+                load_images('Mario/frame2.png').convert(),
+               load_images('Mario/frame3.png').convert()]
+left_frames = [load_images('Mario/frame4.png').convert(),
+               load_images('Mario/frame5.png').convert(),
+               load_images('Mario/frame6.png').convert()]
+
 
 current_frames = right_frames
 current_frame = 0
 last_frame_change = pygame.time.get_ticks()
+
+marrio2_surf = load_images('Mario/Frame6.png')
+
 
 #mario's initial position and movement variables
 mario_x = 100
@@ -46,8 +51,8 @@ is_jumping = False
 jump_count = 0
 
 #load goomba frames
-goomba_frames = [load('Sprite Sheet/Goomba/frame1.png').convert(),
-                 load('Sprite Sheet/Goomba/frame2.png').convert()]
+goomba_frames = [load_images('Goomba/frame1.png').convert(),
+                 load_images('Goomba/frame2.png').convert()]
 
 current_goomba_frame = 0
 last_goomba_frame_change = pygame.time.get_ticks()
@@ -66,6 +71,7 @@ while running:
     for event in pygame.event.get():
         if event.type == QUIT:
             pygame.quit()
+            running = False
             sys.exit()
         elif event.type == KEYDOWN:
             if event.key == K_RIGHT:
@@ -90,6 +96,7 @@ while running:
         if current_time - last_frame_change > FRAME_DELAY:
             current_frame = (current_frame + 1) % len(current_frames)
             last_frame_change = current_time
+            
 
     #animation update for goomba
     if current_time - last_goomba_frame_change > FRAME_DELAY:
@@ -138,7 +145,11 @@ while running:
 
     display.blit(current_frames[current_frame], mario_rect)
     display.blit(goomba_frames[current_goomba_frame], goomba_rect)
+    #for test
+    display.blit(marrio2_surf, (100, 50))
+    
 
     screen.blit(pygame.transform.scale(display, screen.get_size()), (0, 0))
+    
     pygame.display.flip()
     clock.tick(60)  #60FPS
