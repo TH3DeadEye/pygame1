@@ -14,6 +14,7 @@ JUMP_STRENGTH = -20  #strength of the jump
 pygame.init()
 pygame.display.set_caption('Super Mario Bros Remake')
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+display = pygame.Surface((450, 225))
 clock = pygame.time.Clock()
 
 #load background
@@ -34,9 +35,10 @@ last_frame_change = pygame.time.get_ticks()
 
 #mario's initial position and movement variables
 mario_x = 100
-mario_y = 250
+mario_y = 210
 mario_speed = 5
 mario_rect = current_frames[current_frame].get_rect(topleft=(mario_x, mario_y))
+
 
 right_key_pressed = False
 left_key_pressed = False
@@ -51,13 +53,13 @@ current_goomba_frame = 0
 last_goomba_frame_change = pygame.time.get_ticks()
 
 goomba_speed = 2  #goomba's movement speed
-goomba_x = 700  #initial Goomba position
-goomba_y = 385
+goomba_x = 300  #initial Goomba position
+goomba_y = 200
 goomba_rect = goomba_frames[current_goomba_frame].get_rect(topleft=(goomba_x, goomba_y))
 goomba_direction = -1  #goomba moves to the left initially
 
 #define the ground platform (x,y,width,height)
-ground = (0, 400, WIDTH, 20)
+ground = (0, 215, WIDTH, 10)
 
 running = True
 while running:
@@ -74,7 +76,7 @@ while running:
                 current_frames = left_frames
             elif event.key == K_UP and not is_jumping:
                 is_jumping = True
-                jump_count = 20  #adjust the jump height by changing this value
+                jump_count = 15  #adjust the jump height by changing this value
 
         elif event.type == KEYUP:
             if event.key == K_RIGHT:
@@ -120,22 +122,23 @@ while running:
     #reverse goomba's direction if it reaches the screen edges
     if goomba_x < 0:
         goomba_direction = 1  #move to the right
-    elif goomba_x + goomba_rect.width > WIDTH:
+    elif goomba_x + goomba_rect.width > WIDTH/2:
         goomba_direction = -1  #move to the left
 
     #check for collision between Mario and Goomba
     if mario_rect.colliderect(goomba_rect):
         print("mario touched goomba")
     
-    screen.blit(background, (0, 0))
+    display.blit(background, (0, 0))
     mario_rect.topleft = (mario_x, mario_y)
     goomba_rect.topleft = (goomba_x, goomba_y)
 
     #draw the ground
-    pygame.draw.rect(screen, (255, 0, 0), ground)
+    pygame.draw.rect(display, (255, 0, 0), ground)
 
-    screen.blit(current_frames[current_frame], mario_rect)
-    screen.blit(goomba_frames[current_goomba_frame], goomba_rect)
+    display.blit(current_frames[current_frame], mario_rect)
+    display.blit(goomba_frames[current_goomba_frame], goomba_rect)
 
+    screen.blit(pygame.transform.scale(display, screen.get_size()), (0, 0))
     pygame.display.flip()
     clock.tick(60)  #60FPS
