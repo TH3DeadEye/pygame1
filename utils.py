@@ -7,3 +7,5 @@ def load_images(path):
     img.set_colorkey((107,49,156))
 
     return img
+
+#C:\Users\Arman\Desktop\new-folder\Folders\programs\python\pygame\pygame1\Sprite Sheet\Tiles
